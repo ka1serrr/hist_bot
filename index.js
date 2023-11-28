@@ -5,10 +5,8 @@ import { bot_set_commands } from "./bot_actions/set_commands.js";
 
 const { token } = config;
 
-const bot = new Telegram(token, { polling: true });
-bot.setMyCommands([
-  { command: "/start", description: "Начальное приветствие" },
-  { command: "/первая станция", description: "Загадка первой станции" },
-]);
 
-start(bot);
+export const bot = new Telegram(token, { polling: true });
+
+bot_set_commands();
+start();

@@ -18,6 +18,7 @@
     "typescript": "^5.3.2"
   },
   "dependencies": {
-    "node-telegram-bot-api": "^0.64.0"
+    "node-telegram-bot-api": "^0.64.0",
+    "vercel": "^32.5.6"
   }
 }

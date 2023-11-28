@@ -1,41 +1,42 @@
-// import { state } from "../state/state.js";
+import { state } from "../state/state.js";
+import { bot } from "../index.js";
+import { bot_options } from "./bot_options.js";
 
-const state = [{}];
-export const start = (bot) => {
+let scores = 0
+export const start = () => {
   bot.on("message", async (msg) => {
     const text = msg.text;
     const chatId = msg.chat.id;
-    // state[chatId].status = { ...state, status: "pending" };
+
 
     if (text === "/start") {
-      console.log(state);
+
       return await bot.sendMessage(
         chatId,
         `Привет! Это бот Нового Года 2024. Ответь правильно на все загадки, напиши своё стихотворение и получи приз`,
       );
     }
 
-    if (text === "/первая станция") {
-      state[chatId] = { ...state.chat, status: "first_station" };
-      console.log(state);
-      return await bot.sendMessage(chatId, `ЗАГАДКА ПЕРВОЙ СТАНЦИИ`);
+    if (text === '/first_station' || text.toLowerCase() === "первая станция") {
+      state.status = "first_station"
+      console.log(scores)
+      return await bot.sendMessage(chatId, "Загадка первой станции", bot_options)
     }
 
-    if (text === "/вторая станция") {
-      // state.chat = { ...state.chat, status: "second_station" };
-      console.log(state);
-      return await bot.sendMessage(chatId, "Вторая");
+    if (state.status === 'first_station') {
+      if (text === "1") {
+        scores += 1
+        console.log(scores)
+        return bot.sendMessage(chatId, "Харош")
+      }
     }
-
-    // if (state.chat.status === "first_station") {
-    //   // await bot.sendMessage(chatId, state[chatId].status);
-    //   if (text === "Ответ 1") {
-    //     // state[chatId].points += 1;
-    //     return await bot.sendMessage(chatId, "Да! Ты правильно ответил, молодец!");
-    //   }
-    //   return await bot.sendMessage(chatId, "Этот ответ неверный :(");
-    // }
 
     return bot.sendMessage(chatId, "Прости, я тебя не понимаю :(");
   });
+
+  bot.on("callback_query", msg => {
+    state.status = 'pending'
+    const chatId = msg.chat.id;
+    bot.sendMessage(chatId, "Выбери снова другую загадку")
+  })
 };

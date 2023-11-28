@@ -1,6 +1,7 @@
-export const bot_set_commands = (bot) => {
-  bot.setMyCommands([
+import { bot } from "../index.js";
+export const bot_set_commands = async () => {
+  await bot.setMyCommands([
     { command: "/start", description: "Начальное приветствие" },
-    { command: "/Первая станция", description: "Загадка первой станции" },
+    { command: "/first_station", description: "Загадка первой станции" },
   ]);
 };
