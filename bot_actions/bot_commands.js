@@ -42,7 +42,7 @@ export const start = async () => {
       // }
 
       const user = await User.findOne({ chatId });
-      await console.log(user?.current_state);
+      await console.log(user.toJSON());
       // ! ЧЗ?
       if ((await user?.current_state) === "reading_room") {
         await console.log(user?.current_state);
