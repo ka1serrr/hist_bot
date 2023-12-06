@@ -20,7 +20,8 @@ export const start = async () => {
 
     try {
       if (text === "/start") {
-        await User.create({ chatId });
+        const user = await User.create({ chatId });
+        console.log(user.toJSON()); // This is good!
         return await bot.sendMessage(
           chatId,
           `Привет! Это бот Нового Года 2024. Ответь правильно на все загадки, напиши своё стихотворение и получи приз. Начало квеста находится в Читальном Зале. Сканируй там QR-код и напиши ответ на загадку в следующем сообщении!`,
