@@ -22,7 +22,7 @@ export const start = async () => {
 
     try {
       if (text === "/start") {
-        if (!User.findOne({ chatId })) {
+        if (await !User.findOne({ chatId })) {
           await User.create({ chatId });
         }
 
@@ -46,7 +46,7 @@ export const start = async () => {
       // }
 
       const user = await User.findOne({ chatId });
-      console.log(user.status);
+      await console.log(user.status);
       // ! ЧЗ
       if (user.status === "reading_room") {
         if (text.toLowerCase() === "алексей михайлович, стокгольм, киев") {
