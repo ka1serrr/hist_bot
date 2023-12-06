@@ -43,7 +43,7 @@ export const start = async () => {
       // }
 
       console.log(chatId);
-      const user = await User.findOne({ where: { chatId: Number(chatId) } });
+      const project = await User.findOne({ chatId });
       await console.log(user.toJSON());
       // ! ЧЗ?
       if ((await user?.current_state) === "reading_room") {
