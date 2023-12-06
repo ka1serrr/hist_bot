@@ -19,10 +19,9 @@ export const start = async () => {
       let chatId = msg.from.id;
       const answersChat = "993952594";
       const { first_name, last_name, username } = msg?.from;
+
       if (text === "/start") {
-        console.log(msg);
         const user = await User.create({ chatId });
-        id = user.id;
         console.log(user.toJSON());
         return await bot.sendMessage(
           chatId,
@@ -43,10 +42,10 @@ export const start = async () => {
       //   );
       // }
 
-      console.log(chatId);
       const user = await User.findOne({ chatId });
       await console.log(user.toJSON());
-      // ! ЧЗ?
+
+      // ! ЧЗ
       if ((await user?.current_state) === "reading_room") {
         if (text.toLowerCase() === "алексей михайлович, стокгольм, киев") {
           await user.update({ current_state: "search_trans" });
