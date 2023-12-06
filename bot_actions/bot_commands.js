@@ -24,12 +24,11 @@ export const start = async () => {
       if (text === "/start") {
         if (await !User.findOne({ chatId })) {
           await User.create({ chatId });
+          return await bot.sendMessage(
+            chatId,
+            `Привет! Это бот Нового Года 2024. Ответь правильно на все загадки, напиши своё стихотворение и получи приз. Начало квеста находится в Читальном Зале. Сканируй там QR-код и напиши ответ на загадку в следующем сообщении!`,
+          );
         }
-
-        return await bot.sendMessage(
-          chatId,
-          `Привет! Это бот Нового Года 2024. Ответь правильно на все загадки, напиши своё стихотворение и получи приз. Начало квеста находится в Читальном Зале. Сканируй там QR-код и напиши ответ на загадку в следующем сообщении!`,
-        );
       }
 
       // if (text === "/first_place" || text.toLowerCase() === "первая загадка") {
@@ -193,7 +192,7 @@ export const start = async () => {
 
       // ! Лестница
 
-      if (user?.current_state === "search_ladder") {
+      if ((await user?.current_state) === "search_ladder") {
         if (
           text.toLowerCase() === "под лестницей корпуса а" ||
           text.toLowerCase() === "лестница корпуса а" ||
