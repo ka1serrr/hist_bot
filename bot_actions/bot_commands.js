@@ -13,16 +13,17 @@ export const start = async () => {
   }
 
   bot.on("message", async (msg) => {
-    const text = msg.text;
-    let chatId = msg.from.id;
-    const answersChat = "993952594";
-    const { first_name, last_name, username } = msg?.from;
-
     try {
+      let id = 0;
+      const text = msg.text;
+      let chatId = msg.from.id;
+      const answersChat = "993952594";
+      const { first_name, last_name, username } = msg?.from;
       if (text === "/start") {
         console.log(msg);
-        const user = await User.create({ chatId: Number(chatId) });
-        console.log(user.toJSON()); // This is good!
+        const user = await User.create({ chatId });
+        id = user.id;
+        console.log(user.toJSON());
         return await bot.sendMessage(
           chatId,
           `Привет! Это бот Нового Года 2024. Ответь правильно на все загадки, напиши своё стихотворение и получи приз. Начало квеста находится в Читальном Зале. Сканируй там QR-код и напиши ответ на загадку в следующем сообщении!`,
@@ -43,7 +44,7 @@ export const start = async () => {
       // }
 
       console.log(chatId);
-      const project = await User.findOne({ chatId });
+      const user = await User.findOne({ chatId });
       await console.log(user.toJSON());
       // ! ЧЗ?
       if ((await user?.current_state) === "reading_room") {
