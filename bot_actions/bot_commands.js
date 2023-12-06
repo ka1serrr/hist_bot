@@ -42,13 +42,11 @@ export const start = async () => {
       //   );
       // }
 
-      console.log(msg);
+      console.log(chatId);
       const user = await User.findOne({ chatId });
       await console.log(user.toJSON());
       // ! ЧЗ?
       if ((await user?.current_state) === "reading_room") {
-        await console.log(user?.current_state);
-        await console.log(user);
         if (text.toLowerCase() === "алексей михайлович, стокгольм, киев") {
           await user.update({ current_state: "search_trans" });
           return await bot.sendMessage(
