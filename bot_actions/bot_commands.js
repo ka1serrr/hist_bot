@@ -21,7 +21,7 @@ export const start = async () => {
     try {
       if (text === "/start") {
         console.log(msg);
-        const user = await User.create({ chatId });
+        const user = await User.create({ chatId: Number(chatId) });
         console.log(user.toJSON()); // This is good!
         return await bot.sendMessage(
           chatId,
@@ -43,7 +43,7 @@ export const start = async () => {
       // }
 
       console.log(chatId);
-      const user = await User.findOne({ where: { chatId } });
+      const user = await User.findOne({ where: { chatId: chatId } });
       await console.log(user.toJSON());
       // ! ЧЗ?
       if ((await user?.current_state) === "reading_room") {
