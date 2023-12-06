@@ -13,6 +13,8 @@ export const start = async () => {
   }
 
   bot.on("message", async (msg) => {
+    let chatId = msg.from.id;
+
     try {
       let id = 0;
       const text = msg.text;
@@ -21,7 +23,6 @@ export const start = async () => {
       const { first_name, last_name, username } = msg?.from;
 
       if (text === "/start") {
-        let chatId = msg.from.id;
         const user = await User.create({ chatId });
         console.log(user.toJSON());
         return await bot.sendMessage(
@@ -43,7 +44,6 @@ export const start = async () => {
       //   );
       // }
 
-      let chatId = msg.from.id;
       const user = await User.findOne({ where: { chatId: chatId } });
       await console.log(user.toJSON());
 
