@@ -45,7 +45,7 @@ export const start = async () => {
       //   );
       // }
 
-      const user = User.findOne({ chatId });
+      const user = await User.findOne({ chatId });
       console.log(user.status);
       // ! ЧЗ
       if (user.status) {
