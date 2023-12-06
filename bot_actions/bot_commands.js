@@ -33,11 +33,6 @@ export const start = async () => {
         );
       }
 
-      if (text === "/pending" || text.toLowerCase() === "выбрать другой вопрос") {
-        state.status = "pending";
-        return await bot.sendMessage(chatId, `Теперь выбери другую загадку`);
-      }
-
       // if (text === "/first_place" || text.toLowerCase() === "первая загадка") {
       //   // Проверка, ответил ли чел уже на этот вопрос или нет
       //   // const user = await User.findOne({ chatId });
