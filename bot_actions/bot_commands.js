@@ -21,9 +21,11 @@ export const start = async () => {
     const { first_name, last_name, username } = msg?.from;
 
     try {
+      let user = null;
       if (text === "/start") {
         if (await !User.findOne({ chatId })) {
           await User.create({ chatId });
+          user = await User.findOne({ chatId });
         }
 
         return await bot.sendMessage(
@@ -45,7 +47,6 @@ export const start = async () => {
       //   );
       // }
 
-      const user = await User.findOne({ chatId });
       await console.log(user.status);
       // ! ЧЗ?
       if (user?.status === "reading_room") {
@@ -92,7 +93,6 @@ export const start = async () => {
 
       if (user?.status === "trans") {
         if (text.toLowerCase() === "железная маска") {
-          points += 1;
           user.status = "search_dressing_room";
           await user.save();
           return bot.sendMessage(
