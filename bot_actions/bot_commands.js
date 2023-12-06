@@ -1,4 +1,4 @@
-import { state } from "../state/state.js";
+import { state, answers } from "../state/state.js";
 import { bot } from "../index.js";
 import { bot_options } from "./bot_options.js";
 import { sequilize } from "../db.js";
@@ -29,7 +29,7 @@ export const start = async () => {
 
         return await bot.sendMessage(
           chatId,
-          `Привет! Это бот Нового Года 2024. Ответь правильно на все загадки, напиши своё стихотворение и получи приз`,
+          `Привет! Это бот Нового Года 2024. Ответь правильно на все загадки, напиши своё стихотворение и получи приз. Начало квеста находится в Читальном Зале. Сканируй там QR-код и напиши ответ на загадку в следующем сообщении!`,
         );
       }
 
@@ -38,249 +38,285 @@ export const start = async () => {
         return await bot.sendMessage(chatId, `Теперь выбери другую загадку`);
       }
 
-      if (text === "/reading_room" || text.toLowerCase() === "читальный зал") {
-        // Проверка, ответил ли чел уже на этот вопрос или нет
-        // const user = await User.findOne({ chatId });
-        if (right_answers.indexOf("reading_room") > -1) {
-          return bot.sendMessage(chatId, "Ты уже ответил на этот вопрос");
-        }
-        state.status = "reading_room";
-        return await bot.sendPhoto(chatId, `https://ibb.co/ssX0znP`, {
-          caption: `Дайте ответы на вопросы. Напишите их через ЗАПЯТУЮ с ПРОБЕЛОМ.
-          `,
-        });
-      }
+      // if (text === "/first_place" || text.toLowerCase() === "первая загадка") {
+      //   // Проверка, ответил ли чел уже на этот вопрос или нет
+      //   // const user = await User.findOne({ chatId });
+      //   state.status = "reading_room";
+      //   return await bot.sendMessage(
+      //     chatId,
+      //     `Отгадай, где находится первая загадка, после того:
+      //     \nКуда стремится каждый уважающий себя студент на большой перемене в 12:30?
+      //     \nПосле того, как ты нашёл место, дай на неё ответ следующим сообщением
+      //     `,
+      //   );
+      // }
 
+      // ! ЧЗ
       if (state.status === "reading_room") {
-        // const user = await User.findOne({ chatId });
         if (text.toLowerCase() === "алексей михайлович, стокгольм, киев") {
+          state.status = "search_trans";
           points += 1;
-          right_answers = Array.from(new Set([...right_answers, "reading_room"]));
-          // user.save();
-          state.status = "pending";
-          return bot.sendMessage(chatId, "Молодец, вот твоя строчка: Уж щиплет шаловливо щеки");
+          return bot.sendMessage(
+            chatId,
+            `Правильно, вот первая строчка стиха:
+          \nУж щиплет шаловливо щеки
+          
+          \nТеперь тебе нужно угадать, где находится следующий этап квеста и написать сюда!         
+          \nРассказ Джеральда Дарелла, в котором главный герой оказался на пересечении двух реальностей. Разграничением между нашей и жуткой реальностями стали зеркала….
+          \nПодсказка:_____ из Л в В
+          `,
+          );
         }
-        return bot.sendMessage(chatId, "Ты ответил неправильно, попробуй ещё :(");
+        return bot.sendMessage(chatId, answers.wrong_answer);
       }
 
-      // ! Код перехода
+      // ! Переход
 
-      if (text === "/trans" || text.toLowerCase() === "переход") {
-        // Проверка, ответил ли чел уже на этот вопрос или нет
-        // const user = await User.findOne({ chatId });
-        if (right_answers.indexOf("trans") > -1) {
-          return bot.sendMessage(chatId, "Ты уже ответил на этот вопрос");
+      if (state.status === "search_trans") {
+        if (
+          text.toLowerCase() === "переход из л в в" ||
+          text.toLowerCase() === "переход л в" ||
+          text.toLowerCase() === "переход л в в" ||
+          text.toLowerCase() === "переход из корпуса л в в" ||
+          text.toLowerCase() === "переход из корпуса л в корпус в" ||
+          text.toLowerCase() === "переход из л в корпус в" ||
+          text.toLowerCase() === "переход"
+        ) {
+          state.status = "trans";
+          return bot.sendMessage(
+            chatId,
+            `Правильно! Теперь в следующем сообщении напиши ответ на загадку, которую ты можешь увидеть, перейдя по QR-коду!
+          `,
+          );
         }
-        state.status = "trans";
-        return await bot.sendMessage(
-          chatId,
-          `Вопрос: в истории встречалось много узников, однако самым загадочным по праву считается заключённый времён Людовика XIV по имени *******. Однако историки всегда оспаривали многочисленные мифы, ходящие вокруг личности этого человека. Поднимите и вы завесу тайны.`,
-        );
+        return bot.sendMessage(chatId, answers.wrong_answer);
       }
 
       if (state.status === "trans") {
-        // const user = await User.findOne({ chatId });
         if (text.toLowerCase() === "железная маска") {
           points += 1;
-          right_answers = Array.from(new Set([...right_answers, "trans"]));
-          // user.save();
-          state.status = "pending";
-          return bot.sendMessage(chatId, "Молодец, вот твоя строчка: Декабрьский утренний мороз.");
+          state.status = "search_dressing_room";
+
+          return bot.sendMessage(
+            chatId,
+            `Правильно, вот вторая строчка стиха:
+          \nДекабрьский утренний мороз.
+          
+          \nТеперь тебе нужно угадать, где находится следующий этап квеста и написать сюда!         
+          \nТут каждый скоро скинет маску,
+Влекомый знанием, оставит шарф, перчатки, может, даже зонт.
+Бродя среди рядов и цифр искомых, 
+Он следующей загадки знак отыщет влет.
+
+          `,
+          );
         }
-        return bot.sendMessage(chatId, "Ты ответил неправильно, попробуй ещё :(");
+        return bot.sendMessage(chatId, answers.wrong_answer);
       }
 
-      // ! Код гардероба
+      // ! Гардероб
 
-      if (text === "/dressing_room" || text.toLowerCase() === "гардероб") {
-        // Проверка, ответил ли чел уже на этот вопрос или нет
-        // const user = await User.findOne({ chatId });
-        if (right_answers.indexOf("dressing_room") > -1) {
-          return bot.sendMessage(chatId, "Ты уже ответил на этот вопрос");
+      if (state.status === "search_dressing_room") {
+        if (
+          text.toLowerCase() === "гардероб" ||
+          text.toLowerCase() === "переодевалка" ||
+          text.toLowerCase() === "раздевалка"
+        ) {
+          state.status = "dressing_room";
+          return bot.sendMessage(
+            chatId,
+            `Правильно! Теперь в следующем сообщении напиши ответ на загадку, которую ты можешь увидеть, перейдя по QR-коду!
+          `,
+          );
         }
-        state.status = "dressing_room";
-        return await bot.sendPhoto(chatId, `https://ibb.co/L68qRgK`, {
-          caption: "Реши ребус и получи ещё одну строчку стиха!",
-        });
+        return bot.sendMessage(chatId, answers.wrong_answer);
       }
 
       if (state.status === "dressing_room") {
-        // const user = await User.findOne({ chatId });
         if (text.toLowerCase() === "мандарин") {
           points += 1;
-          right_answers = Array.from(new Set([...right_answers, "dressing_room"]));
-          // user.save();
-          state.status = "pending";
-          return bot.sendMessage(chatId, "Молодец, вот твоя строчка: И сессия, грозясь серьезно.");
+          state.status = "search_coffee";
+          return bot.sendMessage(
+            chatId,
+            `Правильно, вот третья строчка стиха:
+          \nИ сессия, грозясь серьезно,
+          
+          \nТеперь тебе нужно угадать, где находится следующий этап квеста и написать сюда!         
+          \nПетечка - Вовочке: - Тебе мать на обед даёт столько деньжищ. А мою не проведёшь, она звонит в столовую на 2 этаже и узнаёт, почем сендвичи. - Моя тоже регулярно звонит и спрашивает: "Почём у вас сендвичи?". - А как же ты её постоянно дуришь? - Только один раз обманул. Она у меня номер столовой спросила, а я ей телефон ... дал.
+Куда звонила мама Вовочки?
+          \nP.S. Там продают хотдоги
+          `,
+          );
         }
-        return bot.sendMessage(chatId, "Ты ответил неправильно, попробуй ещё :(");
+
+        return bot.sendMessage(chatId, answers.wrong_answer);
       }
 
-      // ! Кофейня у гардероба
+      // ! Кофейня
 
-      if (text === "/coffee" || text.toLowerCase() === "кофейня") {
-        // Проверка, ответил ли чел уже на этот вопрос или нет
-        // const user = await User.findOne({ chatId });
-        if (right_answers.indexOf("coffee") > -1) {
-          return bot.sendMessage(chatId, "Ты уже ответил на этот вопрос");
+      if (state.status === "search_coffee") {
+        if (
+          text.toLowerCase() === "кофейня" ||
+          text.toLowerCase() === "кофейня у гардероба" ||
+          text.toLowerCase() === "буфет" ||
+          text.toLowerCase() === "буфет у гардероба" ||
+          text.toLowerCase() === "столовая у гардероба" ||
+          text.toLowerCase() === "столовая с хотдогами"
+        ) {
+          state.status = "coffee";
+          return bot.sendMessage(
+            chatId,
+            `Правильно! Теперь в следующем сообщении напиши ответ на загадку, которую ты можешь увидеть, перейдя по QR-коду!
+          `,
+          );
         }
-        state.status = "coffee";
-        return await bot.sendMessage(
-          chatId,
-          `Напиши год рождения человека-аббревиатуры (по первым буквам): 
-          \nЖёлтый цитрусовый фрукт? 
-          \nГород, где умерла Цветаева? 
-          \nКруг над головой святого? 
-          \nНаша оп? 
-          \nОстановка поединка у борцов?
-`,
-        );
+
+        return bot.sendMessage(chatId, answers.wrong_answer);
       }
 
       if (state.status === "coffee") {
-        // const user = await User.findOne({ chatId });
-        if (text.toLowerCase() === "1870") {
+        if (text === "1870" || text === 1870 || text.toLowerCase() === "тысяча восеьмсот семдесят") {
           points += 1;
-          right_answers = Array.from(new Set([...right_answers, "coffee"]));
-          // user.save();
-          state.status = "pending";
-          return bot.sendMessage(chatId, "Молодец, вот твоя строчка: Как на голову снег, студенту валится на нос.");
-        }
-        return bot.sendMessage(chatId, "Ты ответил неправильно, попробуй ещё :(");
-      }
-
-      // ! Лестница корпуса А
-
-      if (text === "/ladder_a" || text.toLowerCase() === "лестница") {
-        // Проверка, ответил ли чел уже на этот вопрос или нет
-        // const user = await User.findOne({ chatId });
-        if (right_answers.indexOf("ladder_a") > -1) {
-          return bot.sendMessage(chatId, "Ты уже ответил на этот вопрос");
-        }
-        state.status = "ladder_a";
-        return await bot.sendPhoto(chatId, `https://ibb.co/CnB526P`, {
-          caption: `Реши кроссворд: 
-            \n1. Центр крупной вечевой республики.
-            \n2. Наплечный отличительный предмет в виде шнура, пренадлженность фирменной (чаще военной) одежды
-            \n3. "Скотий бог" в славянской мифологии
-            \n4. Праздник, который был заменён Новым годом в СССР
-            \n5. Важный и неотъемлемый этап студенчества
-            \n6. Чем некультурнее были люди, тем культурнее.
+          state.status = "search_ladder";
+          return bot.sendPhoto(chatId, "https://ibb.co/KxDPv5D", {
+            caption: `Правильно, вот четвёртая строчка стиха:
+          \nКак на голову снег, студенту валится на нос.
+          
+          \nТеперь тебе нужно угадать, где находится следующий этап квеста и написать сюда! 
+          \nПодсказка:связано с главным корпусом Басмача. ПОД ____ А :)
           `,
-        });
+          });
+        }
+        return bot.sendMessage(chatId, answers.wrong_answer);
       }
 
-      if (state.status === "ladder_a") {
+      // ! Лестница
+
+      if (state.status === "search_ladder") {
+        if (
+          text.toLowerCase() === "под лестницей корпуса а" ||
+          text.toLowerCase() === "лестница корпуса а" ||
+          text.toLowerCase() === "лестница а"
+        ) {
+          state.status = "ladder";
+          return bot.sendMessage(
+            chatId,
+            `Правильно! Теперь в следующем сообщении напиши ответ на загадку, которую ты можешь увидеть, перейдя по QR-коду!
+          `,
+          );
+        }
+        return bot.sendMessage(chatId, answers.wrong_answer);
+      }
+
+      if (state.status === "ladder") {
         if (text.toLowerCase() === "оливье") {
           points += 1;
-          right_answers = Array.from(new Set([...right_answers, "ladder_a"]));
-          // user.save();
-          state.status = "pending";
-          return bot.sendMessage(chatId, "Молодец, вот твоя строчка: Но сердце полно уже сладкой зимней сказкой.");
+          state.status = "search_yard";
+          return bot.sendPhoto(chatId, "https://ibb.co/hCQn1QK", {
+            caption: `Правильно, вот пятая строчка стиха:
+          \nНо сердце полно уже сладкой зимней сказкой,
+          
+          \nТеперь тебе нужно угадать, где находится следующий этап квеста и написать сюда! 
+          `,
+          });
         }
-        return bot.sendMessage(chatId, "Ты ответил неправильно, попробуй ещё :(");
+        return bot.sendMessage(chatId, answers.wrong_answer);
       }
 
-      // !  Дворик
+      // ! Дворик
 
-      if (text === "/yard" || text.toLowerCase() === "дворик") {
-        // Проверка, ответил ли чел уже на этот вопрос или нет
-        // const user = await User.findOne({ chatId });
-        if (right_answers.indexOf("yard") > -1) {
-          return bot.sendMessage(chatId, "Ты уже ответил на этот вопрос");
-        }
-        state.status = "yard";
-        return await bot.sendPhoto(chatId, `https://ibb.co/C8yWwCc`, {
-          caption: `Разгадайте судоку: 
-          \nИз цифр в серых клеточках вы получите годы жизни культового режиссера и дату выхода фильма, в котором ОН использует известное полотно Питера Брейгеля старшего, в названии, которого фигурирует актуальное время года. Назовите этого режиссера. (ФИ)
+      if (state.status === "search_yard") {
+        if (
+          text.toLowerCase() === "дворик" ||
+          text.toLowerCase() === "внутренний дворик" ||
+          text.toLowerCase() === "двор" ||
+          text.toLowerCase() === "внутренний двор"
+        ) {
+          state.status = "yard";
+          return bot.sendMessage(
+            chatId,
+            `Правильно! Теперь в следующем сообщении напиши ответ на загадку, которую ты можешь увидеть, перейдя по QR-коду!
           `,
-        });
+          );
+        }
+        return bot.sendMessage(chatId, answers.wrong_answer);
       }
 
       if (state.status === "yard") {
-        if (text.toLowerCase() === "андрей тарковский") {
+        if (text.toLowerCase() === "тарковский" || text.toLowerCase() === "андрей тарковский") {
           points += 1;
-          right_answers = Array.from(new Set([...right_answers, "yard"]));
-          // user.save();
-          state.status = "pending";
-          return bot.sendMessage(chatId, "Молодец, вот твоя строчка: И словно бой курантов песнь его.");
-        }
-        return bot.sendMessage(chatId, "Ты ответил неправильно, попробуй ещё :(");
-      }
+          state.status = "search_cowork";
 
-      // ! Коворк
-      if (text === "/coworking" || text.toLowerCase() === "коворкинг") {
-        if (right_answers.indexOf("coworking") > -1) {
-          return bot.sendMessage(chatId, "Ты уже ответил на этот вопрос");
-        }
-
-        state.status = "coworking";
-        return await bot.sendPhoto(chatId, `https://ibb.co/Yb1yqrj`, {
-          caption: `Задание: 
-          \nОтгадать слово с помощью указанных в тексте цифр. Каждой цифре соответствует своя буква на циферблате.
-          \nВ календаре студента-историка декабрь. Приближается не только Новый год, но и зимняя сессия. На календаре 12 декабря, На носу 11 дедлайнов, сдавать 12 экзаменов – вроде сентябрь недавно был… Просыпается ночью студент-историк в 2 ночи в холодном поту – ему приснилось, что Ладынин добавил к экзамену еще 10 билетов. Фух, вроде сон. А потом как вспомнил, что до экзамена 7 дней, а он только на 4 семинарах был. Испугался, сел готовиться с утра, ведь в пятницу еще на Новый год в школе исторических наук идти…
-         
+          return bot.sendPhoto(chatId, "https://ibb.co/L1gMrgs", {
+            caption: `Правильно, вот шестая строчка стиха:
+          \nИ словно бой курантов песнь его.
+          
+          \nТеперь тебе нужно угадать, где находится следующий этап квеста и написать сюда!
+          \nВолк, не тот, кто Волк, а тот, кто в перерыв бежит work  в …. 
           `,
-        });
+          });
+        }
+        return bot.sendMessage(chatId, answers.wrong_answer);
       }
 
-      if (state.status === "coworking") {
-        if (text.toLowerCase() === "дедлайн" || text.toLowerCase() === "дэдлайн") {
+      // ! Коворикнг
+
+      if (state.status === "search_cowork") {
+        if (text.toLowerCase() === "коворкинг" || text.toLowerCase() === "коворк") {
+          state.status = "cowork";
+          return bot.sendMessage(
+            chatId,
+            `Правильно! Теперь в следующем сообщении напиши ответ на загадку, которую ты можешь увидеть, перейдя по QR-коду!
+          `,
+          );
+        }
+        return bot.sendMessage(chatId, answers.wrong_answer);
+      }
+
+      if (state.status === "cowork") {
+        if (text.toLowerCase() === "дедлайн" || text.toLowerCase() === "дэдлайн" || text.toLowerCase() === "deadline") {
           points += 1;
-          right_answers = Array.from(new Set([...right_answers, "coworking"]));
-          // user.save();
-          state.status = "pending";
-          return bot.sendMessage(chatId, "Молодец, вот твоя строчка: Под звон лихой кружится все в веселом танце,");
+          state.status = "search_dining_room";
+          return bot.sendMessage(
+            chatId,
+            `Правильно, вот седьмая строчка стиха:
+          \nПод звон лихой кружится все в веселом танце,
+          
+          \nТеперь тебе нужно угадать, где находится следующий этап квеста и написать сюда!         
+          \nКуда стремится каждый уважающий себя студент на большой перемене в 12:30?
+          `,
+          );
         }
-        return bot.sendMessage(chatId, "Ты ответил неправильно, попробуй ещё :(");
+        return bot.sendMessage(chatId, answers.wrong_answer);
       }
 
-      // ! Cтоловка
-
-      if (text === "/dining_room" || text.toLowerCase() === "столовая") {
-        if (right_answers.indexOf("dining_room") > -1) {
-          return bot.sendMessage(chatId, "Ты уже ответил на этот вопрос");
-        }
-
-        state.status = "dining_room";
-        return await bot.sendPhoto(chatId, `https://ibb.co/mN4bqcs`, {
-          caption: `Узнайте любимых преподавателей в образах дедов Морозов. Ответом станет слово состоящее из 1 буквы фамилии первого «деда», 4 и 9 букв фамилии третьего, 7-ой  третьего и 2 -ой четвертого.
+      // ! Столовая
+      if (state.status === "search_dining_room") {
+        if (text.toLowerCase() === "столовая" || text.toLowerCase() === "столовка" || text.toLowerCase() === "буфет") {
+          state.status = "dining_room";
+          return bot.sendMessage(
+            chatId,
+            `Правильно! Теперь в следующем сообщении напиши ответ на загадку, которую ты можешь увидеть, перейдя по QR-коду!
           `,
-        });
+          );
+        }
+        return bot.sendMessage(chatId, answers.wrong_answer);
       }
 
       if (state.status === "dining_room") {
         if (text.toLowerCase() === "икона") {
           points += 1;
-          right_answers = Array.from(new Set([...right_answers, "dining_room"]));
-          // user.save();
-          state.status = "pending";
-          return bot.sendMessage(chatId, "Молодец, вот твоя строчка: Ждет снега, чуда и подарка заодно.");
-        }
-        return bot.sendMessage(chatId, "Ты ответил неправильно, попробуй ещё :(");
-      }
-
-      // ! Отправить стишок
-
-      if (text === "/send_poem" || text.toLowerCase() === "отправить стишок") {
-        if (points === 8) {
-          if (right_answers.indexOf("send_poem") > -1) {
-            return bot.sendMessage(chatId, "Ты уже отправил свой стишок");
-          }
-
-          state.status = "sending_poem";
+          state.status = "send_poem";
           return bot.sendMessage(
             chatId,
-            "А теперь поборись за главный приз - допиши к стихотворению свое четверостишье. По итогам голосования жюри, лучшие варианты будут зачитываться со сцены актового зала во время новогоднего представления, а их авторы получат призы.",
+            `Молодец, ты со всем справился! А теперь поборись за главный приз - допиши к стихотворению СВОЁ четверостишье. По итогам голосования жюри, лучшие варианты будут зачитываться со сцены актового зала во время новогоднего представления, а их авторы получат призы (четверостишье можно ввести один раз). Если  не хочешь получить секретный приз, напиши любое сообщение :)
+          `,
           );
         }
-
-        return bot.sendMessage(chatId, "Ты ответил не на все вопросы :(");
       }
 
-      if (state.status === "sending_poem") {
-        right_answers = Array.from(new Set([...right_answers, "sending_poem"]));
-        points = 0;
+      if (state.status === "send_poem") {
+        state.status = "pending";
         await bot.sendMessage(chatId, "Дорогой друг, спасибо за участие, с Новым годом!");
         return bot.sendMessage(
           answersChat,
