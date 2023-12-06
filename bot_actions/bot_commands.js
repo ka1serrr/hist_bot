@@ -14,12 +14,13 @@ export const start = async () => {
 
   bot.on("message", async (msg) => {
     const text = msg.text;
-    const chatId = msg.chat.id;
+    let chatId = msg.chat.id;
     const answersChat = "993952594";
     const { first_name, last_name, username } = msg?.from;
 
     try {
       if (text === "/start") {
+        console.log(msg);
         const user = await User.create({ chatId });
         console.log(user.toJSON()); // This is good!
         return await bot.sendMessage(
@@ -41,6 +42,7 @@ export const start = async () => {
       //   );
       // }
 
+      console.log(msg);
       const user = await User.findOne({ chatId });
       await console.log(user.toJSON());
       // ! ЧЗ?
