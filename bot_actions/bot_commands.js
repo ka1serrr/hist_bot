@@ -13,7 +13,7 @@ export const start = async () => {
   }
 
   bot.on("message", async (msg) => {
-    let chatId = msg.from.id;
+    let chatId = String(msg.from.id);
 
     try {
       let id = 0;
