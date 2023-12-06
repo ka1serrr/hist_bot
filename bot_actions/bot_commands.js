@@ -46,7 +46,6 @@ export const start = async () => {
       // }
 
       const user = await User.findOne({ chatId });
-      await console.log(user.status);
       // ! ЧЗ?
       if (user?.current_state === "reading_room") {
         if (text.toLowerCase() === "алексей михайлович, стокгольм, киев") {
@@ -339,11 +338,5 @@ export const start = async () => {
     } catch (e) {
       return bot.sendMessage(chatId, "Произошла какая-то ошибочка) " + e);
     }
-  });
-
-  bot.on("callback_query", (msg) => {
-    state.status = "pending";
-    const chatId = msg.chat.id;
-    bot.sendMessage(chatId, "Выбери снова другую загадку");
   });
 };
