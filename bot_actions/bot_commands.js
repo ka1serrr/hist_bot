@@ -334,8 +334,6 @@ export const start = async () => {
         `,
         );
       }
-
-      return bot.sendMessage(chatId, "Прости, я тебя не понимаю :(");
     } catch (e) {
       return bot.sendMessage(chatId, "Произошла какая-то ошибочка) " + e);
     }
