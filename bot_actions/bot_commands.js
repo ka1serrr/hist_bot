@@ -44,7 +44,9 @@ export const start = async () => {
       //   );
       // }
 
-      const user = await User.findOne({ where: { chatId: chatId } });
+      const user = await User.findOne({
+        where: { chatId },
+      });
       await console.log(user.toJSON());
 
       // ! ЧЗ
