@@ -14,7 +14,7 @@ export const start = async () => {
 
   bot.on("message", async (msg) => {
     const text = msg.text;
-    let chatId = msg.chat.id;
+    let chatId = msg.from.id;
     const answersChat = "993952594";
     const { first_name, last_name, username } = msg?.from;
 
