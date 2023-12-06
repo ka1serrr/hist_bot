@@ -46,26 +46,23 @@ export const start = async () => {
       // }
 
       const user = User.findOne({ chatId });
-      console.log(user);
       // ! ЧЗ
-      if (user.status === "reading_room") {
-        if (text.toLowerCase() === "алексей михайлович, стокгольм, киев") {
-          user.status = "search_trans";
-          await user.save();
-          points += 1;
-          return bot.sendMessage(
-            chatId,
-            `Правильно, вот первая строчка стиха:
+      if (text.toLowerCase() === "алексей михайлович, стокгольм, киев") {
+        user.status = "search_trans";
+        await user.save();
+        points += 1;
+        return bot.sendMessage(
+          chatId,
+          `Правильно, вот первая строчка стиха:
           \nУж щиплет шаловливо щеки
           
           \nТеперь тебе нужно угадать, где находится следующий этап квеста и написать сюда!         
           \nРассказ Джеральда Дарелла, в котором главный герой оказался на пересечении двух реальностей. Разграничением между нашей и жуткой реальностями стали зеркала….
           \nПодсказка:_____ из Л в В
           `,
-          );
-        }
-        return bot.sendMessage(chatId, answers.wrong_answer);
+        );
       }
+      return bot.sendMessage(chatId, answers.wrong_answer);
 
       // ! Переход
 
