@@ -45,7 +45,7 @@ export const start = async () => {
       //   );
       // }
 
-      const user = User.findOne(chatId);
+      const user = User.findOne({ chatId });
       // ! ЧЗ
       if (user.status === "reading_room") {
         if (text.toLowerCase() === "алексей михайлович, стокгольм, киев") {
