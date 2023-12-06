@@ -22,7 +22,7 @@ export const start = async () => {
 
     try {
       if (text === "/start") {
-        if (await !User.findOne({ chatId })) {
+        if (!User.findOne({ chatId })) {
           await User.create({ chatId });
           return await bot.sendMessage(
             chatId,
