@@ -7,5 +7,4 @@ const { token } = config;
 
 export const bot = new Telegram(token, { polling: true });
 
-bot_set_commands();
 start();
