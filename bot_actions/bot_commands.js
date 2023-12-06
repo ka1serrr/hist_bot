@@ -47,10 +47,8 @@ export const start = async () => {
         await console.log(user?.current_state);
         await console.log(user);
         if (text.toLowerCase() === "алексей михайлович, стокгольм, киев") {
-          user.current_state = "search_trans";
-          await user.save();
-          points += 1;
-          return bot.sendMessage(
+          await user.update({ current_state: "search_trans" });
+          return await bot.sendMessage(
             chatId,
             `Правильно, вот первая строчка стиха:
           \nУж щиплет шаловливо щеки
@@ -61,7 +59,7 @@ export const start = async () => {
           `,
           );
         }
-        return bot.sendMessage(chatId, answers.wrong_answer);
+        return await bot.sendMessage(chatId, answers.wrong_answer);
       }
 
       // ! Переход
@@ -76,22 +74,20 @@ export const start = async () => {
           text.toLowerCase() === "переход из л в корпус в" ||
           text.toLowerCase() === "переход"
         ) {
-          user.current_state = "trans";
-          await user.save();
-          return bot.sendMessage(
+          await user.update({ current_state: "trans" });
+          return await bot.sendMessage(
             chatId,
             `Правильно! Теперь в следующем сообщении напиши ответ на загадку, которую ты можешь увидеть, перейдя по QR-коду!
           `,
           );
         }
-        return bot.sendMessage(chatId, answers.wrong_answer);
+        return await bot.sendMessage(chatId, answers.wrong_answer);
       }
 
       if ((await user?.current_state) === "trans") {
         if (text.toLowerCase() === "железная маска") {
-          user.current_state = "search_dressing_room";
-          await user.save();
-          return bot.sendMessage(
+          await user.update({ current_state: "search_dressing_room" });
+          return await bot.sendMessage(
             chatId,
             `Правильно, вот вторая строчка стиха:
           \nДекабрьский утренний мороз.
@@ -105,7 +101,7 @@ export const start = async () => {
           `,
           );
         }
-        return bot.sendMessage(chatId, answers.wrong_answer);
+        return await bot.sendMessage(chatId, answers.wrong_answer);
       }
 
       // ! Гардероб
@@ -116,9 +112,8 @@ export const start = async () => {
           text.toLowerCase() === "переодевалка" ||
           text.toLowerCase() === "раздевалка"
         ) {
-          user.current_state = "dressing_room";
-          await user.save();
-          return bot.sendMessage(
+          await user.update({ current_state: "dressing_room" });
+          return await bot.sendMessage(
             chatId,
             `Правильно! Теперь в следующем сообщении напиши ответ на загадку, которую ты можешь увидеть, перейдя по QR-коду!
           `,
@@ -130,9 +125,8 @@ export const start = async () => {
       if ((await user?.current_state) === "dressing_room") {
         if (text.toLowerCase() === "мандарин") {
           points += 1;
-          user.current_state = "search_coffee";
-          await user.save();
-          return bot.sendMessage(
+          await user.update({ current_state: "search_coffee" });
+          return await bot.sendMessage(
             chatId,
             `Правильно, вот третья строчка стиха:
           \nИ сессия, грозясь серьезно,
@@ -159,24 +153,22 @@ export const start = async () => {
           text.toLowerCase() === "столовая у гардероба" ||
           text.toLowerCase() === "столовая с хотдогами"
         ) {
-          user.current_state = "coffee";
-          await user.save();
-          return bot.sendMessage(
+          await user.update({ current_state: "coffee" });
+          return await bot.sendMessage(
             chatId,
             `Правильно! Теперь в следующем сообщении напиши ответ на загадку, которую ты можешь увидеть, перейдя по QR-коду!
           `,
           );
         }
 
-        return bot.sendMessage(chatId, answers.wrong_answer);
+        return await bot.sendMessage(chatId, answers.wrong_answer);
       }
 
       if ((await user?.current_state) === "coffee") {
         if (text === "1870" || text === 1870 || text.toLowerCase() === "тысяча восеьмсот семдесят") {
           points += 1;
-          user.current_state = "search_ladder";
-          await user.save();
-          return bot.sendPhoto(chatId, "https://ibb.co/KxDPv5D", {
+          await user.update({ current_state: "search_ladder" });
+          return await bot.sendPhoto(chatId, "https://ibb.co/KxDPv5D", {
             caption: `Правильно, вот четвёртая строчка стиха:
           \nКак на голову снег, студенту валится на нос.
           
@@ -185,7 +177,7 @@ export const start = async () => {
           `,
           });
         }
-        return bot.sendMessage(chatId, answers.wrong_answer);
+        return await bot.sendMessage(chatId, answers.wrong_answer);
       }
 
       // ! Лестница
@@ -196,23 +188,21 @@ export const start = async () => {
           text.toLowerCase() === "лестница корпуса а" ||
           text.toLowerCase() === "лестница а"
         ) {
-          user.current_state = "ladder";
-          await user.save();
-          return bot.sendMessage(
+          await user.update({ current_state: "ladder" });
+          return await bot.sendMessage(
             chatId,
             `Правильно! Теперь в следующем сообщении напиши ответ на загадку, которую ты можешь увидеть, перейдя по QR-коду!
           `,
           );
         }
-        return bot.sendMessage(chatId, answers.wrong_answer);
+        return await bot.sendMessage(chatId, answers.wrong_answer);
       }
 
       if ((await user?.current_state) === "ladder") {
         if (text.toLowerCase() === "оливье") {
           points += 1;
-          user.current_state = "search_yard";
-          await user.save();
-          return bot.sendPhoto(chatId, "https://ibb.co/hCQn1QK", {
+          await user.update({ current_state: "search_yard" });
+          return await bot.sendPhoto(chatId, "https://ibb.co/hCQn1QK", {
             caption: `Правильно, вот пятая строчка стиха:
           \nНо сердце полно уже сладкой зимней сказкой,
           
@@ -220,7 +210,7 @@ export const start = async () => {
           `,
           });
         }
-        return bot.sendMessage(chatId, answers.wrong_answer);
+        return await bot.sendMessage(chatId, answers.wrong_answer);
       }
 
       // ! Дворик
@@ -232,23 +222,21 @@ export const start = async () => {
           text.toLowerCase() === "двор" ||
           text.toLowerCase() === "внутренний двор"
         ) {
-          user.current_state = "yard";
-          await user.save();
-          return bot.sendMessage(
+          await user.update({ current_state: "yard" });
+          return await bot.sendMessage(
             chatId,
             `Правильно! Теперь в следующем сообщении напиши ответ на загадку, которую ты можешь увидеть, перейдя по QR-коду!
           `,
           );
         }
-        return bot.sendMessage(chatId, answers.wrong_answer);
+        return await bot.sendMessage(chatId, answers.wrong_answer);
       }
 
       if (user?.current_state === "yard") {
         if (text.toLowerCase() === "тарковский" || text.toLowerCase() === "андрей тарковский") {
           points += 1;
-          user.current_state = "search_cowork";
-          await user.save();
-          return bot.sendPhoto(chatId, "https://ibb.co/L1gMrgs", {
+          await user.update({ current_state: "search_cowork" });
+          return await bot.sendPhoto(chatId, "https://ibb.co/L1gMrgs", {
             caption: `Правильно, вот шестая строчка стиха:
           \nИ словно бой курантов песнь его.
           
@@ -257,30 +245,28 @@ export const start = async () => {
           `,
           });
         }
-        return bot.sendMessage(chatId, answers.wrong_answer);
+        return await bot.sendMessage(chatId, answers.wrong_answer);
       }
 
       // ! Коворикнг
 
       if ((await user?.current_state) === "search_cowork") {
         if (text.toLowerCase() === "коворкинг" || text.toLowerCase() === "коворк") {
-          user.current_state = "cowork";
-          await user.save();
+          await user.update({ current_state: "cowork" });
           return bot.sendMessage(
             chatId,
             `Правильно! Теперь в следующем сообщении напиши ответ на загадку, которую ты можешь увидеть, перейдя по QR-коду!
           `,
           );
         }
-        return bot.sendMessage(chatId, answers.wrong_answer);
+        return await bot.sendMessage(chatId, answers.wrong_answer);
       }
 
       if ((await user?.current_state) === "cowork") {
         if (text.toLowerCase() === "дедлайн" || text.toLowerCase() === "дэдлайн" || text.toLowerCase() === "deadline") {
           points += 1;
-          user.current_state = "search_dining_room";
-          await user.save();
-          return bot.sendMessage(
+          await user.update({ current_state: "search_dining_room" });
+          return await bot.sendMessage(
             chatId,
             `Правильно, вот седьмая строчка стиха:
           \nПод звон лихой кружится все в веселом танце,
@@ -296,9 +282,9 @@ export const start = async () => {
       // ! Столовая
       if ((await state?.current_state) === "search_dining_room") {
         if (text.toLowerCase() === "столовая" || text.toLowerCase() === "столовка" || text.toLowerCase() === "буфет") {
-          user.current_state = "dining_room";
+          await user.update({ current_state: "dining_room" });
           await user.save();
-          return bot.sendMessage(
+          return await bot.sendMessage(
             chatId,
             `Правильно! Теперь в следующем сообщении напиши ответ на загадку, которую ты можешь увидеть, перейдя по QR-коду!
           `,
@@ -310,9 +296,8 @@ export const start = async () => {
       if ((await user?.current_state) === "dining_room") {
         if (text.toLowerCase() === "икона") {
           points += 1;
-          user.current_state = "send_poem";
-          await user.save();
-          return bot.sendMessage(
+          await user.update({ current_state: "send_poem" });
+          return await bot.sendMessage(
             chatId,
             `Молодец, ты со всем справился! А теперь поборись за главный приз - допиши к стихотворению СВОЁ четверостишье. По итогам голосования жюри, лучшие варианты будут зачитываться со сцены актового зала во время новогоднего представления, а их авторы получат призы (четверостишье можно ввести один раз). Если  не хочешь получить секретный приз, напиши любое сообщение :)
           `,
@@ -321,8 +306,7 @@ export const start = async () => {
       }
 
       if ((await user?.current_state) === "send_poem") {
-        user.current_state = "pending";
-        await user.save();
+        await user.update({ current_state: "pending" });
         await bot.sendMessage(chatId, "Дорогой друг, спасибо за участие, с Новым годом!");
         return bot.sendMessage(
           answersChat,
