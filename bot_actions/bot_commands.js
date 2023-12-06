@@ -44,6 +44,8 @@ export const start = async () => {
       await console.log(user?.current_state);
       // ! ЧЗ?
       if ((await user?.current_state) === "reading_room") {
+        await console.log(user?.current_state);
+        await console.log(user);
         if (text.toLowerCase() === "алексей михайлович, стокгольм, киев") {
           user.current_state = "search_trans";
           await user.save();
