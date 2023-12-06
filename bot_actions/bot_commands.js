@@ -48,7 +48,7 @@ export const start = async () => {
       const user = await User.findOne({ chatId });
       await console.log(user?.current_state);
       // ! ЧЗ?
-      if (user?.current_state === "reading_room") {
+      if ((await user?.current_state) === "reading_room") {
         if (text.toLowerCase() === "алексей михайлович, стокгольм, киев") {
           user.current_state = "search_trans";
           await user.save();
@@ -69,7 +69,7 @@ export const start = async () => {
 
       // ! Переход
 
-      if (user?.current_state === "search_trans") {
+      if ((await user?.current_state) === "search_trans") {
         if (
           text.toLowerCase() === "переход из л в в" ||
           text.toLowerCase() === "переход л в" ||
@@ -90,7 +90,7 @@ export const start = async () => {
         return bot.sendMessage(chatId, answers.wrong_answer);
       }
 
-      if (user?.current_state === "trans") {
+      if ((await user?.current_state) === "trans") {
         if (text.toLowerCase() === "железная маска") {
           user.current_state = "search_dressing_room";
           await user.save();
@@ -113,7 +113,7 @@ export const start = async () => {
 
       // ! Гардероб
 
-      if (user?.current_state === "search_dressing_room") {
+      if ((await user?.current_state) === "search_dressing_room") {
         if (
           text.toLowerCase() === "гардероб" ||
           text.toLowerCase() === "переодевалка" ||
@@ -130,7 +130,7 @@ export const start = async () => {
         return bot.sendMessage(chatId, answers.wrong_answer);
       }
 
-      if (user?.current_state === "dressing_room") {
+      if ((await user?.current_state) === "dressing_room") {
         if (text.toLowerCase() === "мандарин") {
           points += 1;
           user.current_state = "search_coffee";
@@ -153,7 +153,7 @@ export const start = async () => {
 
       // ! Кофейня
 
-      if (user?.current_state === "search_coffee") {
+      if ((await user?.current_state) === "search_coffee") {
         if (
           text.toLowerCase() === "кофейня" ||
           text.toLowerCase() === "кофейня у гардероба" ||
@@ -174,7 +174,7 @@ export const start = async () => {
         return bot.sendMessage(chatId, answers.wrong_answer);
       }
 
-      if (user?.current_state === "coffee") {
+      if ((await user?.current_state) === "coffee") {
         if (text === "1870" || text === 1870 || text.toLowerCase() === "тысяча восеьмсот семдесят") {
           points += 1;
           user.current_state = "search_ladder";
@@ -210,7 +210,7 @@ export const start = async () => {
         return bot.sendMessage(chatId, answers.wrong_answer);
       }
 
-      if (user?.current_state === "ladder") {
+      if ((await user?.current_state) === "ladder") {
         if (text.toLowerCase() === "оливье") {
           points += 1;
           user.current_state = "search_yard";
@@ -228,7 +228,7 @@ export const start = async () => {
 
       // ! Дворик
 
-      if (user?.current_state === "search_yard") {
+      if ((await user?.current_state) === "search_yard") {
         if (
           text.toLowerCase() === "дворик" ||
           text.toLowerCase() === "внутренний дворик" ||
@@ -265,7 +265,7 @@ export const start = async () => {
 
       // ! Коворикнг
 
-      if (user?.current_state === "search_cowork") {
+      if ((await user?.current_state) === "search_cowork") {
         if (text.toLowerCase() === "коворкинг" || text.toLowerCase() === "коворк") {
           user.current_state = "cowork";
           await user.save();
@@ -278,7 +278,7 @@ export const start = async () => {
         return bot.sendMessage(chatId, answers.wrong_answer);
       }
 
-      if (user?.current_state === "cowork") {
+      if ((await user?.current_state) === "cowork") {
         if (text.toLowerCase() === "дедлайн" || text.toLowerCase() === "дэдлайн" || text.toLowerCase() === "deadline") {
           points += 1;
           user.current_state = "search_dining_room";
@@ -297,7 +297,7 @@ export const start = async () => {
       }
 
       // ! Столовая
-      if (state?.current_state === "search_dining_room") {
+      if ((await state?.current_state) === "search_dining_room") {
         if (text.toLowerCase() === "столовая" || text.toLowerCase() === "столовка" || text.toLowerCase() === "буфет") {
           user.current_state = "dining_room";
           await user.save();
@@ -310,7 +310,7 @@ export const start = async () => {
         return bot.sendMessage(chatId, answers.wrong_answer);
       }
 
-      if (user?.current_state === "dining_room") {
+      if ((await user?.current_state) === "dining_room") {
         if (text.toLowerCase() === "икона") {
           points += 1;
           user.current_state = "send_poem";
@@ -323,7 +323,7 @@ export const start = async () => {
         }
       }
 
-      if (user?.current_state === "send_poem") {
+      if ((await user?.current_state) === "send_poem") {
         user.current_state = "pending";
         await user.save();
         await bot.sendMessage(chatId, "Дорогой друг, спасибо за участие, с Новым годом!");
