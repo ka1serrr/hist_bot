@@ -1,11 +1,9 @@
 import { state, answers } from "../state/state.js";
 import { bot } from "../index.js";
-import { bot_options } from "./bot_options.js";
 import { sequilize } from "../db.js";
 import { User } from "../models/models.js";
 
 let points = 0;
-let right_answers = [];
 export const start = async () => {
   try {
     await sequilize.authenticate();
