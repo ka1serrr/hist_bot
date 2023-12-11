@@ -60,7 +60,7 @@ export const start = async () => {
       }
 
       if ((await user?.current_state) === "first") {
-        if (text.toLowerCase === "Столовая") {
+        if (text.toLowerCase === "столовая" || text.toLowerCase === "столовка" || text.toLowerCase === "буфет") {
           await bot.sendMessage(
             chatId,
             `Молодец! Держи строчку: 
@@ -185,7 +185,7 @@ export const start = async () => {
       }
 
       if ((await user?.current_state) === "eighth") {
-        if (text.toLowerCase() === 'икона') {
+        if (text.toLowerCase() === "икона") {
           await bot.sendMessage(
             chatId,
             `Молодец! Держи последнюю строчку: 
@@ -211,8 +211,6 @@ export const start = async () => {
         `,
         );
       }
-
-
     } catch (e) {
       return bot.sendMessage(chatId, "Произошла какая-то ошибочка) " + e);
     }
