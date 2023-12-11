@@ -62,7 +62,12 @@ export const start = async () => {
       if ((await user?.current_state) === "first") {
         console.log(user?.current_state);
         console.log(text);
-        if (text.toLowerCase === "столовая" || text.toLowerCase === "столовка" || text.toLowerCase === "буфет") {
+        if (
+          text.toLowerCase == "столовая" ||
+          text.toLowerCase == "столовка" ||
+          text.toLowerCase == "буфет" ||
+          text == "столовая"
+        ) {
           await bot.sendMessage(
             chatId,
             `Молодец! Держи строчку: 
