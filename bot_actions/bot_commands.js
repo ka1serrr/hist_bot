@@ -61,6 +61,7 @@ export const start = async () => {
 
       if ((await user?.current_state) === "first") {
         console.log(user?.current_state);
+        console.log(text);
         if (text.toLowerCase === "столовая" || text.toLowerCase === "столовка" || text.toLowerCase === "буфет") {
           await bot.sendMessage(
             chatId,
@@ -73,7 +74,6 @@ export const start = async () => {
             "Вопрос: в истории встречалось много узников, однако самым загадочным по праву считается заключённый времён Людовика XIV по имени *******. Однако историки всегда оспаривали многочисленные мифы, ходящие вокруг личности этого человека. Поднимите и вы завесу тайны.",
           );
         }
-        return bot.sendMessage(chatId, answers.wrong_answer);
       }
 
       // Вторая
